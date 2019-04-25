@@ -32,6 +32,7 @@ class Event(models.Model):
     building = models.SmallIntegerField(choices=BUILDING_CHOICES)
     description = models.CharField(max_length=500)
     start = models.DateTimeField(default=timezone.now, blank=True)
+    # No event will last after 10PM (or it's very, very unlikely)
     end = models.DateTimeField(default=today_at_ten_pm, blank=True)
 
     def __str__(self):
