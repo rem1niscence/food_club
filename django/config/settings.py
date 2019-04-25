@@ -40,12 +40,15 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'rest_framework',
+    'corsheaders',
 
     # Local
     'food_club',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -131,3 +134,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '../media_root')
 
 # Store CSRF data on the user session instead of a cookie
 CSRF_USE_SESSIONS = True
+
+
+# Temporary workaround for testing CORS, must be changed to whitelist in prod.
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
