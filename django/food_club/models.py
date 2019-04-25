@@ -45,5 +45,6 @@ def image_path_with_uuid(instance, filename):
 
 class EventImage(models.Model):
     image = models.ImageField(upload_to=image_path_with_uuid)
-    event = models.ForeignKey('Event', on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        'Event', related_name='images', on_delete=models.CASCADE)
     uploaded = models.DateTimeField(auto_now_add=True)
