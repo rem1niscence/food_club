@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 autopep8 = "~=1.4.4"
 flake8 = "~=3.7.7"
+rope = "~=0.14.0"
 
 [packages]
 django = "~=2.2"

@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Django-generated files
+migrations/
+static_root/
+media_root/
