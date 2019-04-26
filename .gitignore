@@ -103,6 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# VS Code-generated files
+.vscode/
+
 # Django-generated files
 migrations/
 static_root/
