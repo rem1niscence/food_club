@@ -5,8 +5,20 @@ DJANGO_WSGI_MODULE=config.wsgi
 
 cd $DJANGO_DIR
 
+ls
+
+# Check if postgres is ready
+echo "Waiting for postgres..."
+
+    while ! nc -z $DJANGO_DB_HOST $DJANGO_DB_PORT; do
+      sleep 0.1
+    done
+
+echo "PostgreSQL started"
+
 # Set up Django looking for changes
 ./manage.py collectstatic --noinput
+./manage.py makemigrations
 ./manage.py migrate --noinput
 
 

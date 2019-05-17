@@ -5,8 +5,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN adduser -D user
 
-EXPOSE 80
-
 # Dependencies and scripts setup
 RUN apk add --update --no-cache postgresql-client nginx jpeg-dev zlib-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
@@ -31,5 +29,3 @@ COPY ./scripts /food_club/scripts
 RUN chown -R user /food_club
 
 USER user
-
-CMD ["sh", "-c", "cd /food_club/scripts  && ./gunicorn_start.sh"]
