@@ -25,7 +25,7 @@ SECRET_KEY = 'o3=d#up4t5)#_kza5e@7hf^bwcbjip_i$gl9=o74$xlbtjz@$2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # Local
     'food_club',
+    'users'
 ]
 
 MIDDLEWARE = [

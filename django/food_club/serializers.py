@@ -28,8 +28,8 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     # view. Let me know what you think.
     def get_images(self, obj):
         request = self.context.get('request')
-        event_id = getattr(obj, 'id')
-        event_images = EventImage.objects.all().filter(event__id=event_id)
+        id = getattr(obj, 'id')
+        images = EventImage.objects.all().filter(event__id=id)
         serializer = EventImageSerializer(
-            event_images, many=True, context={'request': request})
+            images, many=True, context={'request': request})
         return [data['image'] for data in serializer.data]

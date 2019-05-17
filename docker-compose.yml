@@ -2,15 +2,25 @@ version: "3"
 
 services:
   web:
-    build: 
+    build:
       context: .
     volumes:
+      - ./django:/food_club/django
       - sqlite_db:/food_club/db.sqlite3
-    ports:
-      - 8000:8000
+      - static_volume:/food_club/django/static_root
     command: >
-      sh -c "./manage.py runserver 0.0.0.0:8000"
-  
+      sh -c "./scripts/gunicorn_start.sh"
+  nginx:
+    build: 
+      ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/static
+    depends_on: 
+      - web
+    
+
 volumes:
   sqlite_db:
-      
+  static_volume:
