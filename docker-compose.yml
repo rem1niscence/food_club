@@ -16,7 +16,7 @@ services:
       - DJANGO_DB_HOST
       - DJANGO_DB_PORT
     volumes:
-      # - ./django:/food_club/django # Comment this line on swarm mode
+      - ./django:/food_club/django # Comment this line on swarm mode
       - static_volume:/food_club/django/static_root
       - media_volume:/food_club/django/media_root
     deploy:
@@ -39,14 +39,25 @@ services:
     ports:
       - 80:80
     volumes:
+      # Django-related mounts
       - static_volume:/static
       - media_volume:/media
+
+      # Certbot-related mounts
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     depends_on: 
       - web
     deploy:
       mode: replicated
       replicas: 1
-    
+    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot 
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   static_volume:

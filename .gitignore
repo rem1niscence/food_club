@@ -110,3 +110,4 @@ venv.bak/
 migrations/
 static_root/
 media_root/
+data/

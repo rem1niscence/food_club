@@ -7,10 +7,12 @@ class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User().objects.all())])
-    username = serializers.EmailField(
+    username = serializers.CharField(
+        max_length=20,
         required=True,
         validators=[UniqueValidator(queryset=User().objects.all())])
-    password = serializers.CharField(min_length=8)
+    password = serializers.CharField(min_length=8, write_only=True, style={
+                                     'input_type': 'password'})
     first_name = serializers.CharField(max_length=60, required=True)
     last_name = serializers.CharField(max_length=60, required=True)
 
@@ -19,14 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
             validated_data['username'],
             validated_data['email'],
             validated_data['password'])
+        user.first_name = validated_data['first_name']
+        user.last_name = validated_data['last_name']
+        user.save()
         return user
 
     class Meta:
         model = User()
         fields = ('id', 'username', 'first_name',
                   'last_name', 'email', 'password')
-        extra_kwargs = {
-            'password': {
-                'write_only': True,
-            },
-        }
