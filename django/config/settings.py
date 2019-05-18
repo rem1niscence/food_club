@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # 3rd Party
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 
     # Local
@@ -135,7 +136,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '../media_root')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 
 # Store CSRF data on the user session instead of a cookie
 CSRF_USE_SESSIONS = True
@@ -144,3 +145,9 @@ CSRF_USE_SESSIONS = True
 # Temporary workaround for testing CORS, must be changed to whitelist in prod.
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}

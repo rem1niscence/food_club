@@ -5,8 +5,6 @@ DJANGO_WSGI_MODULE=config.wsgi
 
 cd $DJANGO_DIR
 
-ls
-
 # Check if postgres is ready
 echo "Waiting for postgres..."
 

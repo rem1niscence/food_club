@@ -5,6 +5,8 @@ from food_club.models import Event, EventImage
 
 
 class EventImageSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="food_club:event-image-detail")
     image = Base64ImageField()
     event = serializers.HyperlinkedRelatedField(
         view_name='food_club:event-detail',
@@ -12,16 +14,18 @@ class EventImageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = EventImage
-        fields = ('id', 'image', 'event', 'uploaded')
+        fields = ('url', 'image', 'event', 'uploaded')
 
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     images = serializers.SerializerMethodField()
+    url = serializers.HyperlinkedIdentityField(
+        view_name="food_club:event-detail")
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'building',
-                  'description', 'start', 'end', 'images')
+        fields = ('url', 'title', 'building',
+                  'description', 'start', 'end', 'images',)
 
     # Only get the url paths of the images, I'm unsure if I should add
     # more info in the images array or just the url path to its image detail

@@ -5,7 +5,7 @@ app_name = 'food_club'
 
 urlpatterns = [
     path('event/', views.EventListView.as_view(), name='event-list'),
-    path('event /<int:pk>/', views.EventDetailView.as_view(),
+    path('event/<int:pk>/', views.EventDetailView.as_view(),
          name='event-detail'),
     path('eventimage/', views.EventImageListView.as_view(),
          name='event-image-list'),
