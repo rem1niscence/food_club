@@ -5,10 +5,11 @@ services:
     build:
       context: .
     image: justaname94/food_club_web
-    depends_on: 
+    container_name: web
+    depends_on:
       - db
     restart: always
-    environment: 
+    environment:
       - DJANGO_SECRET_KEY
       - DJANGO_DB_NAME
       - DJANGO_DB_USER
@@ -21,45 +22,87 @@ services:
       - media_volume:/food_club/django/media_root
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
+      restart_policy:
+        condition: on-failure
     command: >
       sh -c "./scripts/gunicorn_start.sh"
+    networks:
+      - app-network
+
   db:
     image: postgres:10.5-alpine
-    environment: 
+    container_name: db
+    environment:
       - POSTGRES_USER
       - POSTGRES_DB
       - POSTGRES_PASSWORD
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
   nginx:
-    build: 
-      ./nginx
-    image: justaname94/food_club_nginx
+    # build: ./nginx
+    image: nginx:1.15.12-alpine
+    container_name: nginx
     ports:
       - 80:80
+      - 443:443
     volumes:
       # Django-related mounts
       - static_volume:/static
       - media_volume:/media
+      - web-root:/var/www/html
 
-      # Certbot-related mounts
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    depends_on: 
+      - ./nginx:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
       - web
     deploy:
       mode: replicated
       replicas: 1
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  # certbot:
-  #   image: certbot/certbot
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot 
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      restart_policy:
+        condition: on-failure
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - web
+    # Run the command below when you're obtaining https certificates on a
+    # server for the first time.
+    # command: certonly --webroot --webroot-path=/var/www/html --email denys458@gmail.com --agree-tos --no-eff-email --force-renewal -d foodtec.xyz  -d www.foodtec.xyz
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   static_volume:
   media_volume:
   postgres_data:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/food_club/django/static_root/
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/food_club/dhparam/
+      o: bind
+
+networks:
+  app-network:
+    driver: overlay
