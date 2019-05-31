@@ -1,0 +1,69 @@
+version: "3"
+
+services:
+  web:
+    image: justaname94/food_club_web
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app-network
+
+  db:
+    networks:
+      - app-network
+
+  nginx:
+    ports:
+      - 443:443
+    volumes:
+      - ./nginx/prod/:/etc/nginx/conf.d
+
+      - web-root:/var/www/html
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - web
+    # Run the command below when you're obtaining https certificates on a
+    # server for the first time.
+    # command: certonly --webroot --webroot-path=/var/www/html --email denys458@gmail.com --agree-tos --no-eff-email --force-renewal -d foodtec.xyz  -d www.foodtec.xyz
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/food_club/django/static_root/
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/food_club/dhparam/
+      o: bind
+
+networks:
+  app-network:
+    driver: overlay

@@ -2,13 +2,9 @@ version: "3"
 
 services:
   web:
-    build:
-      context: .
-    image: justaname94/food_club_web
-    depends_on: 
+    depends_on:
       - db
-    restart: always
-    environment: 
+    environment:
       - DJANGO_SECRET_KEY
       - DJANGO_DB_NAME
       - DJANGO_DB_USER
@@ -16,48 +12,32 @@ services:
       - DJANGO_DB_HOST
       - DJANGO_DB_PORT
     volumes:
-      - ./django:/food_club/django # Comment this line on swarm mode
       - static_volume:/food_club/django/static_root
       - media_volume:/food_club/django/media_root
-    deploy:
-      mode: replicated
-      replicas: 1
     command: >
       sh -c "./scripts/gunicorn_start.sh"
+
   db:
     image: postgres:10.5-alpine
-    environment: 
+    environment:
       - POSTGRES_USER
       - POSTGRES_DB
       - POSTGRES_PASSWORD
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   nginx:
-    build: 
-      ./nginx
-    image: justaname94/food_club_nginx
+    # build: ./nginx
+    image: nginx:1.15.12-alpine
+    container_name: nginx
     ports:
       - 80:80
     volumes:
       # Django-related mounts
       - static_volume:/static
       - media_volume:/media
-
-      # Certbot-related mounts
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    depends_on: 
+    depends_on:
       - web
-    deploy:
-      mode: replicated
-      replicas: 1
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-  # certbot:
-  #   image: certbot/certbot
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot 
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   static_volume:

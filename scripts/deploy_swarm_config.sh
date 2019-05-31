@@ -1,4 +1,5 @@
 #!/bin/sh
 
-# Run this from root folder 
-docker-compose config | docker stack deploy -c - $1
+# Run this from project's root folder 
+
+exec docker-compose -f docker-compose.yml -f docker-compose.prod.yml config | docker stack deploy -c - $1

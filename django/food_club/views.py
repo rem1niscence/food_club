@@ -7,6 +7,9 @@ class EventListView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class EventDetailView(generics.RetrieveUpdateAPIView):
     queryset = Event.objects.all()

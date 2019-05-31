@@ -9,9 +9,6 @@ RUN adduser -D user
 RUN apk add --update --no-cache postgresql-client nginx jpeg-dev zlib-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
   gcc  libc-dev linux-headers postgresql-dev python3-dev 
-ENV LIBRARY_PATH=/lib:/usr/lib
-
-# COPY ./requirements.txt /requirements.txt
 
 COPY Pipfile .
 COPY Pipfile.lock .

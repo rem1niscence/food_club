@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+    restart: always
+    volumes:
+      - ./django:/food_club/django # Comment this line on swarm mode
+
+  nginx:
+    container_name: nginx
+    volumes:
+      - ./nginx/dev/:/etc/nginx/conf.d
+
+  db:
+    container_name: db
