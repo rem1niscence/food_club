@@ -21,10 +21,13 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
     images = serializers.SerializerMethodField()
     url = serializers.HyperlinkedIdentityField(
         view_name="food_club:event-detail")
+    owner = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True)
 
     class Meta:
         model = Event
-        fields = ('url', 'title', 'building',
+        fields = ('url', 'owner', 'title', 'building',
                   'description', 'start', 'end', 'images',)
 
     # Only get the url paths of the images, I'm unsure if I should add

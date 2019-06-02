@@ -1,3 +1,5 @@
+#!/bin/sh
+
 NAME='django_server'
 DJANGO_DIR='/food_club/django'
 NUM_WORKERS=3
@@ -15,9 +17,16 @@ echo "Waiting for postgres..."
 
 echo "PostgreSQL started"
 
+# In case they don't have a migrations folder, check changes for each app
+for app in food_club users
+do
+  ./manage.py makemigrations $app
+done
+
 # Set up Django looking for changes
-./manage.py collectstatic --noinput
+# ./manage.py makemigrations food_club
 ./manage.py makemigrations
+./manage.py collectstatic --noinput
 ./manage.py migrate --noinput
 
 

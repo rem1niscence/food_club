@@ -7,7 +7,7 @@ services:
       context: .
     restart: always
     volumes:
-      - ./django:/food_club/django # Comment this line on swarm mode
+      - ./django:/food_club/django
 
   nginx:
     container_name: nginx
