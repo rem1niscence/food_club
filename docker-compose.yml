@@ -11,6 +11,7 @@ services:
       - DJANGO_DB_PASSWORD
       - DJANGO_DB_HOST
       - DJANGO_DB_PORT
+      - DJANGO_SETTINGS_MODULE
     volumes:
       - static_volume:/food_club/django/static_root
       - media_volume:/food_club/django/media_root

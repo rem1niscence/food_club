@@ -20,12 +20,11 @@ echo "PostgreSQL started"
 # In case they don't have a migrations folder, check changes for each app
 for app in food_club users
 do
-  ./manage.py makemigrations $app
+  ./manage.py makemigrations $app --noinput
 done
 
 # Set up Django looking for changes
-# ./manage.py makemigrations food_club
-./manage.py makemigrations
+./manage.py makemigrations --noinput
 ./manage.py collectstatic --noinput
 ./manage.py migrate --noinput
 
