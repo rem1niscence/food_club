@@ -25,7 +25,7 @@ COPY ./scripts /food_club/scripts
 
 RUN mkdir -p /food_club/django/media_root \
   && mkdir -p /food_club/django/static_root \
-  && chown -R user /food_club
+  && chown -R user /food_club/*
 
 # TODO: Bind volumes as non-root or change ownership of them to non-root user.
 # USER user
